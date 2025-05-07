@@ -40,7 +40,7 @@ class EnrollmentController extends Controller
      * )
      */
 
-    public function store(Request $request)
+    public function store(Request $request) // Single course enrollment
     {
         $user = Auth::user();
 
@@ -106,6 +106,48 @@ class EnrollmentController extends Controller
         }
 
         return response()->json($enrollment, 201);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/v1/enroll-from-payment/{paymentId}",
+     *     summary="Enroll into multiple purchased courses after verified payment",
+     *     tags={"Enrollment"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(
+     *         name="paymentId",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the verified payment",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(response=200, description="Successfully enrolled into purchased courses"),
+     *     @OA\Response(response=404, description="Payment not found or not verified")
+     * )
+     */
+    public function enrollFromPayment($paymentId)
+    {
+        $user = Auth::user();
+
+        $payment = Payment::where('id', $paymentId)
+            ->where('user_id', $user->id)
+            ->where('verified', true)
+            ->first();
+
+        if (!$payment) {
+            return response()->json(['error' => 'Payment not found or not verified.'], 404);
+        }
+
+        $paymentItems = PaymentItem::where('payment_id', $payment->id)->get();
+
+        foreach ($paymentItems as $item) {
+            Enrollment::firstOrCreate([
+                'user_id' => $user->id,
+                'course_id' => $item->course_id
+            ]);
+        }
+
+        return response()->json(['message' => 'Successfully enrolled into purchased courses.']);
     }
 
     /**

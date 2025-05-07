@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 
-// Swagger UI, for API tracking (L5-Swagger)
+// Swagger UI, for API testing (L5-Swagger)
 /**
  * @OA\Info(
  *     title="Online Course Platform API",
@@ -13,10 +13,10 @@ namespace App\Http\Controllers\Api;
  *         email="support@yourdomain.com"
  *     )
  * )
- *
+ * 
  * @OA\Server(
- *     url=L5_SWAGGER_CONST_HOST,
- *     description="Main API Server"
+ *     url="http://localhost:8000",
+ *     description="Local Dev Server"
  * )
  */
 class SwaggerBaseController {}
