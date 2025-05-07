@@ -19,6 +19,8 @@ Route::prefix('v1')->group(function () {
     Route::get('courses/{id}', [CourseController::class, 'show']);
     Route::get('courses/preview/{id}', [CourseController::class, 'preview']);
 
+    Route::get('reviews/course/{course_id}', [ReviewController::class, 'reviewsByCourse']); // By Course
+
     // Auth-protected endpoints
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('courses', [CourseController::class, 'store']);
@@ -43,8 +45,8 @@ Route::prefix('v1')->group(function () {
         Route::put('lessons/{id}', [LessonController::class, 'update']);
         Route::delete('lessons/{id}', [LessonController::class, 'destroy']);
 
-        Route::post('review', [ReviewController::class, 'store']);
-        Route::get('reviews/course/{course_id}', [ReviewController::class, 'show']); // By Course
+        // Review routes
+        Route::post('review', [ReviewController::class, 'store']); 
         Route::get('reviews/my', [ReviewController::class, 'myReviews']);
         Route::delete('review/{id}', [ReviewController::class, 'destroy']);
 
